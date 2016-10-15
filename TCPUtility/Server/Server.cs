@@ -265,7 +265,10 @@ namespace TCPUtility.Server
         private void DataAccept(Socket sock)
         {
             ClientReference client = new ClientReference(sock);
-            _clients.Add(client);
+            lock (_clients)
+            {
+                _clients.Add(client);
+            }
 
             try
             {
@@ -307,7 +310,10 @@ namespace TCPUtility.Server
             //remove client if it is required
             if (client.BytesReceived == 0)
             {
-                _clients.Remove(client);
+                lock (_clients)
+                {
+                    _clients.Remove(client);
+                }
                 return;
             }
 

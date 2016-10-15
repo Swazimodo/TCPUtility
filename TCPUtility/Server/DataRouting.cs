@@ -33,11 +33,11 @@ namespace TCPUtility.Server
         public void CallMethod(BaseDataPackage data, Guid id)
         {
             //dynamic child = Convert.ChangeType(this, DataType);
-            Functions[data.DataType].Invoke(data, id);
+            Functions[data.GetType()].Invoke(data, id);
         }
         public void CallMethod(BaseDataPackage data)
         {
-            Functions[data.DataType].Invoke(data, default(Guid));
+            Functions[data.GetType()].Invoke(data, default(Guid));
         }
 
         public delegate void IncomingData(BaseDataPackage data, Guid clientId);

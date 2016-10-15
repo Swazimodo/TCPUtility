@@ -32,7 +32,7 @@ namespace TCPUtility.Client
         
         public void CallMethod(BaseDataPackage data)
         {
-            Functions[data.DataType].Invoke(data);
+            Functions[data.GetType()].Invoke(data);
         }
 
         public delegate void IncomingData(BaseDataPackage data);
