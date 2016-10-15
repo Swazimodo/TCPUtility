@@ -9,7 +9,7 @@ Allows you to create your own data types that will be serialized to and from the
     {
         public int MyNum { get; set; }
 
-        public TestData(int num) : base(typeof(TestData))
+        public TestData(int num)
         {
             MyNum = num;
         }
