@@ -12,44 +12,19 @@ namespace TCPUtility.Transport
     [Serializable]
     public abstract class BaseDataPackage
     {
-        #region properties
-
-        /// <summary>
-        /// Type of package
-        /// </summary>
-        public Type DataType { get; private set; }
-
-        #endregion
-
-        #region constructors
-
-        public BaseDataPackage(Type TargetType)
-        {
-            DataType = TargetType;
-        }
-
-        #endregion
-
         #region public methods
 
         /// <summary>
         /// Returns the class that inherited this base class
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <returns>child class</returns>
         /// <exception cref="InvalidCastException"></exception>
         /// <exception cref="FormatException"></exception>
+        /// <exception cref="OverflowException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
-        public T Unbox<T>()
-        {
-            if (this is T)
-                return (T)Convert.ChangeType(this, typeof(T));
-            return default(T);
-        }
-
         public dynamic Unbox()
         {
-            return Convert.ChangeType(this, DataType);
+            return Convert.ChangeType(this, this.GetType());
         }
 
         #endregion

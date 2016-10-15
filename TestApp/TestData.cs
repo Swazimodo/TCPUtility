@@ -8,7 +8,7 @@ namespace TestApp
     {
         public int MyNum { get; set; }
 
-        public TestData(int num) : base(typeof(TestData))
+        public TestData(int num)
         {
             MyNum = num;
         }
