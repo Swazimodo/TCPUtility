@@ -1,6 +1,7 @@
 # TCPUtility
-Create client/server C# applications that use TCP communication without dealing with any networking code.
-Allows you to create your own data types that will be serialized to and from the server.
+Create client/server C# applications that use TCP communication without dealing with any of the communication headache.
+Thread management, data serialization, socket connections are all managed for you.
+Define your own data types and handlers and have them just work.
 
 # Setup Data transfer classes
 ## define data types that will be transfered between client and server
