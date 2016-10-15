@@ -16,6 +16,8 @@ namespace TCPUtility.Server
     {
         #region Member variables
 
+        //events call into this context to ensure that there isnt any funny thead issues for consumers of this appliation
+        SynchronizationContext _context;
         //socket listening on any ip and 1666 port
         Socket _listenSock = null;//= new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         //list to hold all information about each connection
@@ -48,7 +50,7 @@ namespace TCPUtility.Server
 
                 if (_thrSend == null || !_thrSend.IsAlive) isRunning = false;
                 if (_listenSock == null || !_listenSock.IsBound) isRunning = false;
-                if (_startError) isRunning = false;
+                //if (_startError) isRunning = false;
 
                 return isRunning;
             }
@@ -87,6 +89,8 @@ namespace TCPUtility.Server
 
         #region Events
 
+        public delVoidVoid ServerStarted { get; set; }
+        public delVoidVoid ServerHaulted { get; set; }
         public delVoidGuid ClientConnected { get; set; }
         public delVoidGuid ClientDisconnected { get; set; }
 
@@ -96,6 +100,7 @@ namespace TCPUtility.Server
 
         public Server(int maxConnections, int portNumber)
         {
+            _context = SynchronizationContext.Current;
             _maxConnections = maxConnections;
             _portNumber = portNumber;
             DataHandlers = new DataRouting();
@@ -103,6 +108,7 @@ namespace TCPUtility.Server
 
         public Server(int maxConnections, int portNumber, int bufferSize)
         {
+            _context = SynchronizationContext.Current;
             _maxConnections = maxConnections;
             _portNumber = portNumber;
             DataHandlers = new DataRouting();
@@ -113,10 +119,14 @@ namespace TCPUtility.Server
 
         #region public methods
 
+        /// <summary>
+        /// Open port start listening for connections
+        /// </summary>
+        /// <exception cref="Exception">Thown if server does not startup correctly</exception>
         public void ServerStart()
         {
             if (IsRunning) return;
-            _startError = true;
+            _startError = false;
 
             //start up the thread if needed
             if (_thrSend == null || _thrSend.ThreadState == ThreadState.Aborted)
@@ -139,6 +149,7 @@ namespace TCPUtility.Server
             catch (Exception ex)
             {
                 Console.WriteLine("ServerStart:bind " + ex.ToString());
+                _startError = true;
             }
 
             try
@@ -148,6 +159,7 @@ namespace TCPUtility.Server
             catch (Exception ex)
             {
                 Console.WriteLine("ServerStart:Listen " + ex.ToString());
+                _startError = true;
             }
 
             try
@@ -157,9 +169,28 @@ namespace TCPUtility.Server
             catch (Exception ex)
             {
                 Console.WriteLine("ServerStart:BeginAccept " + ex.ToString());
+                _startError = true;
             }
 
-            _startError = false;
+            if (!_startError)
+            {
+                try
+                {
+                    //dispatch call into the proper thread
+                    _context.Post(s =>
+                    {
+                        ServerStarted?.Invoke();
+                    }, null);
+                    //ServerStarted?.Invoke();
+                }
+                catch (Exception ex)
+                {
+                    //dont trust user code
+                    Console.WriteLine("Calling server ServerStarted event handler threw an exception");
+                }
+            }
+            else
+                throw new Exception("Unable to start server");
         }
 
         public void ServerShutdown()
@@ -191,6 +222,21 @@ namespace TCPUtility.Server
             lock (_groupDataQueue)
             {
                 _groupDataQueue.Clear();
+            }
+
+            try
+            {
+                //dispatch call into the proper thread
+                _context.Post(s =>
+                {
+                    ServerHaulted?.Invoke();
+                }, null);
+                //ServerHaulted?.Invoke();
+            }
+            catch (Exception ex)
+            {
+                //dont trust user code
+                Console.WriteLine("Calling server ServerHaulted event handler threw an exception");
             }
         }
 
@@ -279,9 +325,14 @@ namespace TCPUtility.Server
 
             try
             {
-                ClientConnected?.Invoke(client.Id);
+                //dispatch call into the proper thread
+                _context.Post(s =>
+                {
+                    ClientConnected?.Invoke(client.Id);
+                }, null);
+                //ClientConnected?.Invoke(client.Id);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 //dont trust user code
                 Console.WriteLine("Calling server ClientConnected event handler threw an exception");
@@ -329,9 +380,14 @@ namespace TCPUtility.Server
             {
                 try
                 {
-                    ClientDisconnected?.Invoke(client.Id);
+                    //dispatch call into the proper thread
+                    _context.Post(s =>
+                    {
+                        ClientDisconnected?.Invoke(client.Id);
+                    }, null);
+                    //ClientDisconnected?.Invoke(client.Id);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     //dont trust user code
                     Console.WriteLine("Calling server ClientDisconnected event handler threw an exception");
@@ -445,6 +501,12 @@ namespace TCPUtility.Server
                                 _bf.Serialize(ms, data);
                                 lock (_clients)
                                 {
+                                    if(_clients.Count == 0)
+                                    {
+                                        //there are no clients drop data
+                                        _groupDataQueue.Clear();
+                                        continue;
+                                    }
                                     foreach (ClientReference client in _clients)
                                     {
                                         try

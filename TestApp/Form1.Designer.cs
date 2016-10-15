@@ -30,18 +30,20 @@
         {
             this.bServerStart = new System.Windows.Forms.Button();
             this.bServerEnd = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.lClient = new System.Windows.Forms.Label();
             this.bClientStart = new System.Windows.Forms.Button();
             this.bClientEnd = new System.Windows.Forms.Button();
-            this.bSendAll = new System.Windows.Forms.Button();
-            this.bSend = new System.Windows.Forms.Button();
-            this.bSendOne = new System.Windows.Forms.Button();
+            this.bServerSendAll = new System.Windows.Forms.Button();
+            this.bClientSend = new System.Windows.Forms.Button();
+            this.bServerSendOne = new System.Windows.Forms.Button();
+            this.gbServer = new System.Windows.Forms.GroupBox();
+            this.gbClient = new System.Windows.Forms.GroupBox();
+            this.gbServer.SuspendLayout();
+            this.gbClient.SuspendLayout();
             this.SuspendLayout();
             // 
             // bServerStart
             // 
-            this.bServerStart.Location = new System.Drawing.Point(57, 8);
+            this.bServerStart.Location = new System.Drawing.Point(6, 19);
             this.bServerStart.Name = "bServerStart";
             this.bServerStart.Size = new System.Drawing.Size(75, 23);
             this.bServerStart.TabIndex = 0;
@@ -51,7 +53,8 @@
             // 
             // bServerEnd
             // 
-            this.bServerEnd.Location = new System.Drawing.Point(138, 8);
+            this.bServerEnd.Enabled = false;
+            this.bServerEnd.Location = new System.Drawing.Point(87, 19);
             this.bServerEnd.Name = "bServerEnd";
             this.bServerEnd.Size = new System.Drawing.Size(75, 23);
             this.bServerEnd.TabIndex = 1;
@@ -59,27 +62,9 @@
             this.bServerEnd.UseVisualStyleBackColor = true;
             this.bServerEnd.Click += new System.EventHandler(this.bServerEnd_Click);
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(13, 13);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(38, 13);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Server";
-            // 
-            // lClient
-            // 
-            this.lClient.AutoSize = true;
-            this.lClient.Location = new System.Drawing.Point(16, 42);
-            this.lClient.Name = "lClient";
-            this.lClient.Size = new System.Drawing.Size(33, 13);
-            this.lClient.TabIndex = 7;
-            this.lClient.Text = "Client";
-            // 
             // bClientStart
             // 
-            this.bClientStart.Location = new System.Drawing.Point(57, 37);
+            this.bClientStart.Location = new System.Drawing.Point(6, 19);
             this.bClientStart.Name = "bClientStart";
             this.bClientStart.Size = new System.Drawing.Size(75, 23);
             this.bClientStart.TabIndex = 8;
@@ -89,7 +74,8 @@
             // 
             // bClientEnd
             // 
-            this.bClientEnd.Location = new System.Drawing.Point(138, 37);
+            this.bClientEnd.Enabled = false;
+            this.bClientEnd.Location = new System.Drawing.Point(87, 19);
             this.bClientEnd.Name = "bClientEnd";
             this.bClientEnd.Size = new System.Drawing.Size(75, 23);
             this.bClientEnd.TabIndex = 9;
@@ -97,54 +83,77 @@
             this.bClientEnd.UseVisualStyleBackColor = true;
             this.bClientEnd.Click += new System.EventHandler(this.bClientEnd_Click);
             // 
-            // bSendAll
+            // bServerSendAll
             // 
-            this.bSendAll.Location = new System.Drawing.Point(219, 8);
-            this.bSendAll.Name = "bSendAll";
-            this.bSendAll.Size = new System.Drawing.Size(75, 23);
-            this.bSendAll.TabIndex = 10;
-            this.bSendAll.Text = "Send All";
-            this.bSendAll.UseVisualStyleBackColor = true;
-            this.bSendAll.Click += new System.EventHandler(this.bSendAll_Click);
+            this.bServerSendAll.Enabled = false;
+            this.bServerSendAll.Location = new System.Drawing.Point(168, 19);
+            this.bServerSendAll.Name = "bServerSendAll";
+            this.bServerSendAll.Size = new System.Drawing.Size(75, 23);
+            this.bServerSendAll.TabIndex = 10;
+            this.bServerSendAll.Text = "Send All";
+            this.bServerSendAll.UseVisualStyleBackColor = true;
+            this.bServerSendAll.Click += new System.EventHandler(this.bServerSendAll_Click);
             // 
-            // bSend
+            // bClientSend
             // 
-            this.bSend.Location = new System.Drawing.Point(219, 37);
-            this.bSend.Name = "bSend";
-            this.bSend.Size = new System.Drawing.Size(75, 23);
-            this.bSend.TabIndex = 11;
-            this.bSend.Text = "Send";
-            this.bSend.UseVisualStyleBackColor = true;
-            this.bSend.Click += new System.EventHandler(this.bSend_Click);
+            this.bClientSend.Enabled = false;
+            this.bClientSend.Location = new System.Drawing.Point(168, 19);
+            this.bClientSend.Name = "bClientSend";
+            this.bClientSend.Size = new System.Drawing.Size(75, 23);
+            this.bClientSend.TabIndex = 11;
+            this.bClientSend.Text = "Send";
+            this.bClientSend.UseVisualStyleBackColor = true;
+            this.bClientSend.Click += new System.EventHandler(this.bClientSend_Click);
             // 
-            // bSendOne
+            // bServerSendOne
             // 
-            this.bSendOne.Location = new System.Drawing.Point(300, 8);
-            this.bSendOne.Name = "bSendOne";
-            this.bSendOne.Size = new System.Drawing.Size(75, 23);
-            this.bSendOne.TabIndex = 12;
-            this.bSendOne.Text = "Send One";
-            this.bSendOne.UseVisualStyleBackColor = true;
-            this.bSendOne.Click += new System.EventHandler(this.bSendOne_Click);
+            this.bServerSendOne.Enabled = false;
+            this.bServerSendOne.Location = new System.Drawing.Point(249, 19);
+            this.bServerSendOne.Name = "bServerSendOne";
+            this.bServerSendOne.Size = new System.Drawing.Size(75, 23);
+            this.bServerSendOne.TabIndex = 12;
+            this.bServerSendOne.Text = "Send One";
+            this.bServerSendOne.UseVisualStyleBackColor = true;
+            this.bServerSendOne.Click += new System.EventHandler(this.bServerSendOne_Click);
+            // 
+            // gbServer
+            // 
+            this.gbServer.Controls.Add(this.bServerStart);
+            this.gbServer.Controls.Add(this.bServerSendOne);
+            this.gbServer.Controls.Add(this.bServerEnd);
+            this.gbServer.Controls.Add(this.bServerSendAll);
+            this.gbServer.Location = new System.Drawing.Point(12, 12);
+            this.gbServer.Name = "gbServer";
+            this.gbServer.Size = new System.Drawing.Size(337, 53);
+            this.gbServer.TabIndex = 13;
+            this.gbServer.TabStop = false;
+            this.gbServer.Text = "Server";
+            // 
+            // gbClient
+            // 
+            this.gbClient.Controls.Add(this.bClientStart);
+            this.gbClient.Controls.Add(this.bClientEnd);
+            this.gbClient.Controls.Add(this.bClientSend);
+            this.gbClient.Enabled = false;
+            this.gbClient.Location = new System.Drawing.Point(12, 71);
+            this.gbClient.Name = "gbClient";
+            this.gbClient.Size = new System.Drawing.Size(337, 53);
+            this.gbClient.TabIndex = 14;
+            this.gbClient.TabStop = false;
+            this.gbClient.Text = "Client";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(382, 80);
-            this.Controls.Add(this.bSendOne);
-            this.Controls.Add(this.bSend);
-            this.Controls.Add(this.bSendAll);
-            this.Controls.Add(this.bClientEnd);
-            this.Controls.Add(this.bClientStart);
-            this.Controls.Add(this.lClient);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.bServerEnd);
-            this.Controls.Add(this.bServerStart);
+            this.ClientSize = new System.Drawing.Size(362, 134);
+            this.Controls.Add(this.gbClient);
+            this.Controls.Add(this.gbServer);
             this.Name = "Form1";
             this.Text = "Test Connection App";
+            this.gbServer.ResumeLayout(false);
+            this.gbClient.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -152,13 +161,13 @@
 
         private System.Windows.Forms.Button bServerStart;
         private System.Windows.Forms.Button bServerEnd;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label lClient;
         private System.Windows.Forms.Button bClientStart;
         private System.Windows.Forms.Button bClientEnd;
-        private System.Windows.Forms.Button bSendAll;
-        private System.Windows.Forms.Button bSend;
-        private System.Windows.Forms.Button bSendOne;
+        private System.Windows.Forms.Button bServerSendAll;
+        private System.Windows.Forms.Button bClientSend;
+        private System.Windows.Forms.Button bServerSendOne;
+        private System.Windows.Forms.GroupBox gbServer;
+        private System.Windows.Forms.GroupBox gbClient;
     }
 }
 

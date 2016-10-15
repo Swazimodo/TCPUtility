@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using System.IO;
 using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.IO;
+using System.Threading;
 
 using TCPUtility.Transport;
 
@@ -16,6 +17,8 @@ namespace TCPUtility.Client
     {
         #region member variables
 
+        
+        SynchronizationContext _context;            //events call into this context to ensure that there isnt any funny thead issues for consumers of this appliation
         Socket _socket;                             //tcp socket into port 1666 of server
         byte[] _bBuff;                              //buffer to dump data into
         MemoryStream _ms = new MemoryStream();      //used for recieving data
@@ -46,12 +49,14 @@ namespace TCPUtility.Client
 
         public Client()
         {
+            _context = SynchronizationContext.Current;
             _bBuff = new byte[1500];
             DataHandlers = new DataRouting();
         }
 
         public Client(int bufferSize)
         {
+            _context = SynchronizationContext.Current;
             _bBuff = new byte[bufferSize];
             DataHandlers = new DataRouting();
         }
@@ -86,15 +91,21 @@ namespace TCPUtility.Client
 
         public void Disconnect()
         {
-            _socket.Disconnect(false);
-            _socket.Dispose();
+            if (_state == ConnectionState.Disconnected) return;
+            _socket.Close();
+            _socket = null;
             _state = ConnectionState.Disconnected;
 
             try
             {
-                ConnectionClosed?.Invoke();
+                //dispatch call into the proper thread
+                _context.Post(s =>
+                {
+                    ConnectionClosed?.Invoke();
+                }, null);
+                //ConnectionClosed?.Invoke();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 //dont trust user code
                 Console.WriteLine("Calling client ConnectionClosed event handler threw an exception");
@@ -152,9 +163,14 @@ namespace TCPUtility.Client
 
                 try
                 {
-                    ConnectionEstablished?.Invoke();
+                    //dispatch call into the proper thread
+                    _context.Post(s =>
+                    {
+                        ConnectionEstablished?.Invoke();
+                    }, null);
+                    //ConnectionEstablished?.Invoke();
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     //dont trust user code
                     Console.WriteLine("Calling client ConnectionEstablished event handler threw an exception");
@@ -180,9 +196,7 @@ namespace TCPUtility.Client
             catch (Exception)
             {
                 Console.WriteLine("cbRxDone: connect failed");
-                //close connection
-                _socket.Close();
-                _socket = null;
+                Disconnect();
             }
         }
 
