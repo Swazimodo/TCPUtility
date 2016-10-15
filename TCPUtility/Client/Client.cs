@@ -27,14 +27,18 @@ namespace TCPUtility.Client
         int _iRecieves;            //number of recieve calls
         int _iBytesTotal;          //number of bytes recieved so far
 
-        private delegate void delVoidVoid();
-        private delegate void delVoidInt(int i);
-
         #endregion
 
         #region Properties
 
         public DataRouting DataHandlers { get; private set; }
+
+        #endregion
+
+        #region Events
+
+        public delVoidVoid ConnectionClosed { get; set; }
+        public delVoidVoid ConnectionEstablished { get; set; }
 
         #endregion
 
@@ -85,6 +89,16 @@ namespace TCPUtility.Client
             _socket.Disconnect(false);
             _socket.Dispose();
             _state = ConnectionState.Disconnected;
+
+            try
+            {
+                ConnectionClosed?.Invoke();
+            }
+            catch (Exception)
+            {
+                //dont trust user code
+                Console.WriteLine("Calling client ConnectionClosed event handler threw an exception");
+            }
         }
 
         public void SendData(BaseDataPackage data)
@@ -135,6 +149,16 @@ namespace TCPUtility.Client
             try
             {
                 _socket.BeginReceive(_bBuff, 0, _bBuff.Length, SocketFlags.None, cbRxDone, _socket);
+
+                try
+                {
+                    ConnectionEstablished?.Invoke();
+                }
+                catch (Exception)
+                {
+                    //dont trust user code
+                    Console.WriteLine("Calling client ConnectionEstablished event handler threw an exception");
+                }
             }
             catch (Exception)
             {
@@ -157,7 +181,8 @@ namespace TCPUtility.Client
             {
                 Console.WriteLine("cbRxDone: connect failed");
                 //close connection
-                Disconnect();
+                _socket.Close();
+                _socket = null;
             }
         }
 
@@ -259,6 +284,13 @@ namespace TCPUtility.Client
 
         #endregion
 
-        public enum ConnectionState { Disconnected, Connecting, Connected}
+        #region definitions
+
+        public enum ConnectionState { Disconnected, Connecting, Connected }
+
+        public delegate void delVoidVoid();
+        private delegate void delVoidInt(int i);
+
+        #endregion
     }
 }

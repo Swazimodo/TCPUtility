@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TCPUtility
+namespace TCPUtility.Common
 {
-    static public class Common
+    class ErrorHandler
     {
         public static DelLogError CustomErrorHandler = null;
 

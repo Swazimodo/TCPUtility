@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.IO;
+using TCPUtility.Common;
 
 namespace TCPUtility.Server
 {
@@ -23,6 +24,7 @@ namespace TCPUtility.Server
         public Socket sock { get; set; }
         public byte[] Buffer { get; set; }
 
+        public DateTime ConnectionTime { get; private set; }
         public int Recieved { get; set; }
         public int RecieveCalls { get; set; }
         public int Fragments { get; set; }
@@ -36,7 +38,9 @@ namespace TCPUtility.Server
 
         public ClientReference(Socket s)
         {
-            Id = Guid.NewGuid();
+            ConnectionTime = DateTime.Now;
+            Id = SequentialGuid.GenerateGuid();
+            //Id = Guid.NewGuid();
             sock = s;
             Buffer = new byte[BufferSize];
             ms = new MemoryStream();

@@ -35,25 +35,6 @@ namespace TCPUtility.Server
 
         #endregion
 
-        #region Constructors
-
-        public Server(int maxConnections, int portNumber)
-        {
-            _maxConnections = maxConnections;
-            _portNumber = portNumber;
-            DataHandlers = new DataRouting();
-        }
-
-        public Server(int maxConnections, int portNumber, int bufferSize)
-        {
-            _maxConnections = maxConnections;
-            _portNumber = portNumber;
-            DataHandlers = new DataRouting();
-            ClientReference.BufferSize = 1500;
-        }
-
-        #endregion
-
         #region Public Properties
 
         /// <summary>
@@ -100,6 +81,32 @@ namespace TCPUtility.Server
                     return _clients.Count;
                 }
             }
+        }
+
+        #endregion
+
+        #region Events
+
+        public delVoidGuid ClientConnected { get; set; }
+        public delVoidGuid ClientDisconnected { get; set; }
+
+        #endregion
+
+        #region Constructors
+
+        public Server(int maxConnections, int portNumber)
+        {
+            _maxConnections = maxConnections;
+            _portNumber = portNumber;
+            DataHandlers = new DataRouting();
+        }
+
+        public Server(int maxConnections, int portNumber, int bufferSize)
+        {
+            _maxConnections = maxConnections;
+            _portNumber = portNumber;
+            DataHandlers = new DataRouting();
+            ClientReference.BufferSize = 1500;
         }
 
         #endregion
@@ -272,6 +279,16 @@ namespace TCPUtility.Server
 
             try
             {
+                ClientConnected?.Invoke(client.Id);
+            }
+            catch (Exception)
+            {
+                //dont trust user code
+                Console.WriteLine("Calling server ClientConnected event handler threw an exception");
+            }
+
+            try
+            {
                 //connection successful, so begin receiving data sent from client
                 sock.BeginReceive(client.Buffer, 0, client.Buffer.Length, SocketFlags.None, cbRxDone, client);
             }
@@ -310,10 +327,21 @@ namespace TCPUtility.Server
             //remove client if it is required
             if (client.BytesReceived == 0)
             {
+                try
+                {
+                    ClientDisconnected?.Invoke(client.Id);
+                }
+                catch (Exception)
+                {
+                    //dont trust user code
+                    Console.WriteLine("Calling server ClientDisconnected event handler threw an exception");
+                }
+
                 lock (_clients)
                 {
                     _clients.Remove(client);
                 }
+
                 return;
             }
 
@@ -469,11 +497,12 @@ namespace TCPUtility.Server
 
         #endregion
 
-        #region delegate definitions
+        #region definitions
 
         private delegate void delVoidClientReference(ClientReference client);
         private delegate void delVoidSock(Socket s);
-        private delegate void delVoidVoid();
+        public delegate void delVoidVoid();
+        public delegate void delVoidGuid(Guid id);
 
         #endregion
     }

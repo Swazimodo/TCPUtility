@@ -43,7 +43,8 @@
   <ItemGroup>
     <Compile Include="Client\Client.cs" />
     <Compile Include="Client\DataRouting.cs" />
-    <Compile Include="Common.cs" />
+    <Compile Include="Common\ErrorHandler.cs" />
+    <Compile Include="Common\SequentialGuid.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Server\ClientReference.cs" />
     <Compile Include="Server\DataRouting.cs" />
