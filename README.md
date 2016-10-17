@@ -4,8 +4,9 @@ Thread management, data serialization, socket connections are all managed for yo
 Define your own data types and handlers and have them just work.
 
 # Setup Data transfer classes
-## define data types that will be transfered between client and server
-    [Serializable]
+## define data types that will be transferred between client and server
+    //Example data class that transfers an int
+	[Serializable]
     public class TestData : BaseDataPackage
     {
         public int MyNum { get; set; }
@@ -17,10 +18,11 @@ Define your own data types and handlers and have them just work.
     }
    
 # Server Setup 
-## create server - set number of allowed connections and a port number
-    var server = new TCPUtility.Server.Server(5, 31415);
+## create server
+    //set number of allowed connections and a port number
+	var server = new TCPUtility.Server.Server(5, 31415);
 
-## register handler for each data type supported - this delegate will then be called whenever this type of data is transfered
+## register handler for each data type supported - this delegate will then be called whenever this type of data is transferred
     server.DataHandlers.RegisterHandler(typeof(TestData), new TCPUtility.Server.DataRouting.IncomingData(serverDataHandler));
     
     //example handler
@@ -47,7 +49,7 @@ Define your own data types and handlers and have them just work.
         TestData data = new TestData(6);
         
         //grab the first client to show its possible
-        //this would likely be done in a data handler to reply back to package that was recieved
+        //this would likely be done in a data handler to reply back to package that was received
         var ids = server.Clients;
         if (ids.Count == 0)
             return;
@@ -60,7 +62,7 @@ Define your own data types and handlers and have them just work.
 ## create a new client
     var client = new TCPUtility.Client.Client();
 
-## register handler for each data type supported - this delegate will then be called whenever this type of data is transfered
+## register handler for each data type supported - this delegate will then be called whenever this type of data is transferred
     client.DataHandlers.RegisterHandler(typeof(TestData), new TCPUtility.Client.DataRouting.IncomingData(clientDataHandler));
     
     //example data handler

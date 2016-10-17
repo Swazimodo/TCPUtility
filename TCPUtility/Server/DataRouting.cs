@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using TCPUtility.Transport;
 
 namespace TCPUtility.Server
@@ -30,14 +31,41 @@ namespace TCPUtility.Server
                 throw new ArgumentException("type must inherit from BaseDataPackage");
         }
 
-        public void CallMethod(BaseDataPackage data, Guid id)
+        public void CallMethod(SynchronizationContext context, BaseDataPackage data, Guid id)
         {
-            //dynamic child = Convert.ChangeType(this, DataType);
-            Functions[data.GetType()].Invoke(data, id);
+            //Functions[data.GetType()].Invoke(data, id);
+            try
+            {
+                //dispatch call into the proper thread
+                context.Post(s =>
+                {
+                    Functions[data.GetType()].Invoke(data, id);
+                }, null);
+                //ConnectionClosed?.Invoke();
+            }
+            catch (Exception ex)
+            {
+                //dont trust user code
+                Console.WriteLine("Calling client CallMethod data handler threw an exception");
+            }
         }
-        public void CallMethod(BaseDataPackage data)
+        public void CallMethod(SynchronizationContext context, BaseDataPackage data)
         {
-            Functions[data.GetType()].Invoke(data, default(Guid));
+            //Functions[data.GetType()].Invoke(data, default(Guid));
+            try
+            {
+                //dispatch call into the proper thread
+                context.Post(s =>
+                {
+                    Functions[data.GetType()].Invoke(data, default(Guid));
+                }, null);
+                //ConnectionClosed?.Invoke();
+            }
+            catch (Exception ex)
+            {
+                //dont trust user code
+                Console.WriteLine("Calling client CallMethod data handler threw an exception");
+            }
         }
 
         public delegate void IncomingData(BaseDataPackage data, Guid clientId);

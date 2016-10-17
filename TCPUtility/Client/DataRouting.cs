@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using TCPUtility.Transport;
 
 namespace TCPUtility.Client
@@ -30,9 +31,23 @@ namespace TCPUtility.Client
                 throw new ArgumentException("type must inherit from BaseDataPackage");
         }
         
-        public void CallMethod(BaseDataPackage data)
+        public void CallMethod(SynchronizationContext context, BaseDataPackage data)
         {
-            Functions[data.GetType()].Invoke(data);
+            //Functions[data.GetType()].Invoke(data);
+            try
+            {
+                //dispatch call into the proper thread
+                context.Post(s =>
+                {
+                    Functions[data.GetType()].Invoke(data);
+                }, null);
+                //ConnectionClosed?.Invoke();
+            }
+            catch (Exception ex)
+            {
+                //dont trust user code
+                Console.WriteLine("Calling client CallMethod data handler threw an exception");
+            }
         }
 
         public delegate void IncomingData(BaseDataPackage data);

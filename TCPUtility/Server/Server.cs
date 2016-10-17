@@ -422,7 +422,7 @@ namespace TCPUtility.Server
                         ClientReference.TotalRecieved++;
                         client.Recieved++;
                         //calls the method registered to handle this package
-                        DataHandlers.CallMethod((o as BaseDataPackage), client.Id);
+                        DataHandlers.CallMethod(_context, (o as BaseDataPackage), client.Id);
                     }
                     else
                         //what the heck was this type? Someone trying to break our server!

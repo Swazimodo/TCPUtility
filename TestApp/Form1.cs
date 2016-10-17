@@ -30,7 +30,7 @@ namespace TestApp
             {
                 server = new TCPUtility.Server.Server(5, 31415);
                 //register data types that will be accepted
-                server.DataHandlers.RegisterHandler(typeof(TestData), new TCPUtility.Server.DataRouting.IncomingData(serverDataHandler));
+                server.DataHandlers.RegisterHandler(typeof(ButtonClickData), new TCPUtility.Server.DataRouting.IncomingData(serverDataHandler));
                 //register event handlers
                 server.ServerStarted = serverStarted;
                 server.ServerHaulted = serverHaulted;
@@ -45,13 +45,13 @@ namespace TestApp
 
         private void bServerSendAll_Click(object sender, EventArgs e)
         {
-            TestData data = new TestData(5);
+            ButtonClickData data = new ButtonClickData("Sent to all clients");
             server.SendToAll(data);
         }
 
         private void bServerSendOne_Click(object sender, EventArgs e)
         {
-            TestData data = new TestData(6);
+            ButtonClickData data = new ButtonClickData("Send to one client");
             var ids = server.Clients;
             if (ids.Count == 0)
                 return;
@@ -61,8 +61,8 @@ namespace TestApp
 
         private void serverDataHandler(BaseDataPackage data, Guid id)
         {
-            TestData d = data.Unbox();
-            Console.WriteLine("serverDataHandler: Server Data- " + d.MyNum);
+            ButtonClickData d = data.Unbox();
+            tbServerData.Text = d.ButtonClicked;
         }
 
         private void serverStarted()
@@ -90,7 +90,7 @@ namespace TestApp
             {
                 client = new TCPUtility.Client.Client();
                 //register data types that will be accepted
-                client.DataHandlers.RegisterHandler(typeof(TestData), new TCPUtility.Client.DataRouting.IncomingData(clientDataHandler));
+                client.DataHandlers.RegisterHandler(typeof(ButtonClickData), new TCPUtility.Client.DataRouting.IncomingData(clientDataHandler));
                 //register event handlers
                 client.ConnectionEstablished = connected;
                 client.ConnectionClosed = disconnected;
@@ -105,14 +105,14 @@ namespace TestApp
 
         private void bClientSend_Click(object sender, EventArgs e)
         {
-            TestData data = new TestData(7);
+            ButtonClickData data = new ButtonClickData("Send data from client");
             client.SendData(data);
         }
 
         private void clientDataHandler(BaseDataPackage data)
         {
-            TestData d = data.Unbox();
-            Console.WriteLine("serverDataHandler: Server Data- " + d.MyNum);
+            ButtonClickData d = data.Unbox();
+            tbClientData.Text = d.ButtonClicked;
         }
 
         private void connected()

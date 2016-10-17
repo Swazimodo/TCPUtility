@@ -235,7 +235,7 @@ namespace TCPUtility.Client
                     {
                         data = (o as BaseDataPackage);
                         _iFrames++;
-                        DataHandlers.CallMethod(data);
+                        DataHandlers.CallMethod(_context, data);
                     }
                     else
                     {
