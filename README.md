@@ -17,7 +17,7 @@ Define your own data types and handlers and have them just work.
         }
     }
    
-# Server Setup 
+# Server Usage 
 ## create server
     //set number of allowed connections and a port number
 	var server = new TCPUtility.Server.Server(5, 31415);
@@ -37,13 +37,6 @@ Define your own data types and handlers and have them just work.
     server.ServerShutdown();
     
 ## send data to one specific connected client
-    private void bSendAll_Click(object sender, EventArgs e)
-    {
-        TestData data = new TestData(5);
-        server.SendToAll(data);
-    }
-    
-## send data to all connected clients
     private void bSendOne_Click(object sender, EventArgs e)
     {
         TestData data = new TestData(6);
@@ -58,7 +51,14 @@ Define your own data types and handlers and have them just work.
         server.SendClient(data, id);
     }
     
-# Client Setup
+## send data to all connected clients
+    private void bSendAll_Click(object sender, EventArgs e)
+    {
+        TestData data = new TestData(5);
+        server.SendToAll(data);
+    }
+    
+# Client Usage
 ## create a new client
     var client = new TCPUtility.Client.Client();
 
