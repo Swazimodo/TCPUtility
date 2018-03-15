@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TCPUtility.Common
+namespace NetworkUtility.Tcp.Common
 {
     public static class SequentialGuid
     {

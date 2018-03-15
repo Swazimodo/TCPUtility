@@ -84,9 +84,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TCPUtility\TCPUtility.csproj">
+    <ProjectReference Include="..\NetworkUtility.Tcp\NetworkUtility.Tcp.csproj">
       <Project>{77aa9601-783f-437e-8065-e68269b2411e}</Project>
-      <Name>TCPUtility</Name>
+      <Name>NetworkUtility.Tcp</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

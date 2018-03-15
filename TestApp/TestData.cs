@@ -1,5 +1,5 @@
 ﻿using System;
-using TCPUtility.Transport;
+using NetworkUtility.Tcp.Transport;
 
 namespace TestApp
 {

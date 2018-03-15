@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TCPUtility.Transport
+namespace NetworkUtility.Tcp.Transport
 {
     /// <summary>
     /// use this class to serialize all comunication to and from the server
