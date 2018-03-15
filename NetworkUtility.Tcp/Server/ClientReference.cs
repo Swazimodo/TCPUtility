@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.IO;
-using TCPUtility.Common;
+using NetworkUtility.Tcp.Common;
 
-namespace TCPUtility.Server
+namespace NetworkUtility.Tcp.Server
 {
     public class ClientReference
     {

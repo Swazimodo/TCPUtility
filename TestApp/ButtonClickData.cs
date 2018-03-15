@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TCPUtility.Transport;
+using NetworkUtility.Tcp.Transport;
 
 namespace TestApp
 {

@@ -8,9 +8,9 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
 using System.Threading;
 
-using TCPUtility.Transport;
+using NetworkUtility.Tcp.Transport;
 
-namespace TCPUtility.Server
+namespace NetworkUtility.Tcp.Server
 {
     public class Server
     {

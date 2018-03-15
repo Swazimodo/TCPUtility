@@ -9,9 +9,9 @@ using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 
-using TCPUtility.Transport;
+using NetworkUtility.Tcp.Transport;
 
-namespace TCPUtility.Client
+namespace NetworkUtility.Tcp.Client
 {
     public class Client
     {

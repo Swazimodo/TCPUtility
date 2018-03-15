@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using TCPUtility.Transport;
+using NetworkUtility.Tcp.Transport;
 
-namespace TCPUtility.Client
+namespace NetworkUtility.Tcp.Client
 {
     public class DataRouting
     {

@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
 
-using TCPUtility.Transport;
+using NetworkUtility.Tcp.Transport;
 
 namespace TestApp
 {
     public partial class Form1 : Form
     {
-        TCPUtility.Server.Server server = null;
-        TCPUtility.Client.Client client = null;
+        NetworkUtility.Tcp.Server.Server server = null;
+        NetworkUtility.Tcp.Client.Client client = null;
 
         public Form1()
         {
@@ -28,9 +28,9 @@ namespace TestApp
         {
             if (server == null)
             {
-                server = new TCPUtility.Server.Server(5, 31415);
+                server = new NetworkUtility.Tcp.Server.Server(5, 31415);
                 //register data types that will be accepted
-                server.DataHandlers.RegisterHandler(typeof(ButtonClickData), new TCPUtility.Server.DataRouting.IncomingData(serverDataHandler));
+                server.DataHandlers.RegisterHandler(typeof(ButtonClickData), new NetworkUtility.Tcp.Server.DataRouting.IncomingData(serverDataHandler));
                 //register event handlers
                 server.ServerStarted = serverStarted;
                 server.ServerHaulted = serverHaulted;
@@ -88,9 +88,9 @@ namespace TestApp
         {
             if (client == null)
             {
-                client = new TCPUtility.Client.Client();
+                client = new NetworkUtility.Tcp.Client.Client();
                 //register data types that will be accepted
-                client.DataHandlers.RegisterHandler(typeof(ButtonClickData), new TCPUtility.Client.DataRouting.IncomingData(clientDataHandler));
+                client.DataHandlers.RegisterHandler(typeof(ButtonClickData), new NetworkUtility.Tcp.Client.DataRouting.IncomingData(clientDataHandler));
                 //register event handlers
                 client.ConnectionEstablished = connected;
                 client.ConnectionClosed = disconnected;
